@@ -50,6 +50,8 @@ contract CryptoPoy {
 	uint256 public auctionPrice;
 
 //===========================================================================================
+	//TODO: manage time, end of game and reset of variables
+
 	constructor(string memory _communityCardsURI, string memory _luckyCardsURI,
 				uint256[40] memory _costs, uint256[40][6] memory _rents, Colors[40] memory _colors) {
 		communityCardsURI = _communityCardsURI;
