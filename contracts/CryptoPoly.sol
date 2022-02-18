@@ -23,6 +23,7 @@ contract CryptoPoy {
 		uint256	isInJail;
 		address	wallet;
 		uint256[12] heritage; //the order is the "Colors" one
+		uint256[] slotsOwned;
 		//mapping(Colors => uint256) heritage;
 	}
 
@@ -156,7 +157,6 @@ contract CryptoPoy {
 
 	function bid(uint256 _amount) public started {
 		uint256 playerIndex = getPlayer[msg.sender] - 1;
-		Slot storage currentSlot = slots[auctionIndex];
 
 		require(auctionIndex > 0, "There's no properties to bid for");
 		require(_amount > players[playerIndex].balance, "You have insufficient funds!");
@@ -167,8 +167,10 @@ contract CryptoPoy {
 				auctionPrice = _amount;
 			}
 		} else {
-			currentSlot.owner = auctionOwner;
 			players[auctionOwner - 1].balance -= auctionPrice;
+			if (_check_bankrupt(playerIndex) == true)
+				return ;
+			_own(playerIndex, players[playerIndex].slot);
 			auctionIndex = 0;
 			auctionPrice = 0;
 			auctionOwner = 0;
@@ -248,8 +250,23 @@ contract CryptoPoy {
 		}
 	}
 
-	function _end_game() internal {
+	function _free_properties(uint256 _playerIndex) internal returns(bool) {
+		if (players[_playerIndex].balance == 0) {
 
+			//pop player
+			return true;
+		}
+		return false;
+	}
+
+	function _end_game() internal {
+		//repartir balance al ganador que siempre sera players[0] ya que es el que queda
+	}
+
+	function _own(uint256 _playerIndex, uint256 _slot) internal {
+		slots[_slot].owner = auctionOwner;
+		players[_playerIndex].heritage[slots[_slot].color]++;
+		players[_playerIndex].slotsOwned.push(players[_playerIndex].slot);
 	}
 
 	function random(uint256 _module) internal returns(uint256) {
