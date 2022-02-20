@@ -173,6 +173,7 @@ contract CryptoPoy {
 				require(houses > 0, "There are no houses left to buy!");
 			else
 				_buy_to(true, _buyTo, _amount);
+			return ;
 		} else {
 			if (_buyTo == 0)
 				require(hotels > 0, "There are no hotels left to buy!");
